@@ -7,7 +7,7 @@ def stopwordslist(filepath):
 
 def seg_sentence(sentence):
     sentence_seged = jieba.cut(sentence.strip())
-    stopwords = stopwordslist('Lib_stopwordslist.txt')
+    stopwords = stopwordslist('HarryPotter\Lib_stopwordslist.txt')
     outstr = ''
     for word in sentence_seged:
         if word not in stopwords:
@@ -16,8 +16,10 @@ def seg_sentence(sentence):
                 outstr += " "
     return outstr
 
-inputs = open('HarryPotter.txt','r',encoding="UTF-8")
-outputs = open('HarryPotter_no_stopwords.txt','w',encoding="UTF-8")
+jieba.load_userdict("HarryPotter\HarrPotter_people.txt")
+
+inputs = open('HarryPotter\HarryPotter.txt','r',encoding="UTF-8")
+outputs = open('HarryPotter\HarryPotter_no_stopwords.txt','w',encoding="UTF-8")
 
 for line in inputs:
     line_seg = seg_sentence(line)
@@ -25,10 +27,10 @@ for line in inputs:
 outputs.close()
 inputs.close()
 
-with open('HarryPotter_no_stopwords.txt','r',encoding='UTF-8') as fr:
+with open('HarryPotter\HarryPotter_no_stopwords.txt','r',encoding='UTF-8') as fr:
     data = jieba.cut(fr.read())
 data = dict(Counter(data))
 
-with open('HarryPotter_wordcount.txt','w',encoding='UTF-8') as fw:
+with open('HarryPotter\HarryPotter_wordcount.txt','w',encoding='UTF-8') as fw:
     for k,v in data.items():
         fw.write('%s,%d\n' % (k,v))
