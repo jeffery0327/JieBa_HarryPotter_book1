@@ -1,5 +1,7 @@
 from collections import Counter
 import jieba
+import jieba.analyse
+import jieba.posseg
 
 def stopwordslist(filepath):
     stopwords = [line.strip() for line in open(filepath,'r',encoding="UTF-8").readlines()]
@@ -16,11 +18,10 @@ def seg_sentence(sentence):
                 outstr += " "
     return outstr
 
-jieba.load_userdict("HarryPotter\HarrPotter_people.txt")
+jieba.load_userdict("HarryPotter\Lib_HarryPotter_people.txt")
 
 inputs = open('HarryPotter\HarryPotter.txt','r',encoding="UTF-8")
 outputs = open('HarryPotter\HarryPotter_no_stopwords.txt','w',encoding="UTF-8")
-
 for line in inputs:
     line_seg = seg_sentence(line)
     outputs.write(line_seg)
@@ -28,9 +29,13 @@ outputs.close()
 inputs.close()
 
 with open('HarryPotter\HarryPotter_no_stopwords.txt','r',encoding='UTF-8') as fr:
+    content = fr.read()
     data = jieba.cut(fr.read())
 data = dict(Counter(data))
+for x, w in jieba.analyse.extract_tags(content,topK=20, withWeight=True):
+    print('%s %s' % (x, w))
 
 with open('HarryPotter\HarryPotter_wordcount.txt','w',encoding='UTF-8') as fw:
     for k,v in data.items():
         fw.write('%s,%d\n' % (k,v))
+
