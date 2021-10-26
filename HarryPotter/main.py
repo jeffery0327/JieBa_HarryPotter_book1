@@ -4,7 +4,7 @@ import jieba.analyse
 import jieba.posseg
 from wordcloud import WordCloud
 import numpy as np
-
+from PIL import Image
 
 
 # 匯入字典
@@ -12,6 +12,7 @@ jieba.load_userdict("HarryPotter\Lib\Lib_HarryPotter_people.txt")
 jieba.load_userdict("HarryPotter\Lib\Lib_HarryPotter_location.txt")
 jieba.load_userdict("HarryPotter\Lib\Lib_HarryPotter_SentimentPositive.txt")
 jieba.load_userdict("HarryPotter\Lib\Lib_HarryPotter_SentimentPositive.txt")
+
 
 # 讀取停用詞
 def stopwordslist(filepath):
@@ -76,11 +77,11 @@ words = seg_sentence(content_new)
 # 生成文字雲
 
 # 文字雲圖片、字體
-# mask = np.array(Image.open('HarryPotter/picture/circle.png'))
-font = 'cmss10.ttf'
+mask = np.array(Image.open('HarryPotter/picture/hat.jpg'))
+font = 'D:\\mingliu.ttc'
 
 # 設定
-my_wordcloud = WordCloud(font_path=font).generate(words)
+my_wordcloud = WordCloud(font_path=font,mask=mask,background_color='white').generate(words)
 
 my_wordcloud.to_file('HarryPotter/picture/result.png')
 
@@ -92,8 +93,8 @@ my_wordcloud.to_file('HarryPotter/picture/result.png')
 # for word in words.split('/'):
 #     print(word)
 
-# 前20名名字
-tags = jieba.analyse.extract_tags(words, topK=20)
+# # 前20名名字
+# tags = jieba.analyse.extract_tags(words, topK=20)
 
 # # 生成前20名名字檔案
 # with open('HarryPotter/Result/HarryPotter_20name.txt','w',encoding='UTF-8') as fw:
