@@ -3,39 +3,83 @@ import jieba
 import jieba.analyse
 import jieba.posseg
 
+# 匯入字典
+jieba.load_userdict("HarryPotter\Lib_HarryPotter_people.txt")
+jieba.load_userdict("HarryPotter\Lib_HarryPotter_location.txt")
+jieba.load_userdict("HarryPotter\Lib_HarryPotter_SentimentPositive.txt")
+jieba.load_userdict("HarryPotter\Lib_HarryPotter_SentimentPositive.txt")
+
+# 讀取停用詞
 def stopwordslist(filepath):
     stopwords = [line.strip() for line in open(filepath,'r',encoding="UTF-8").readlines()]
     return stopwords
 
-def seg_sentence(sentence):
-    sentence_seged = jieba.cut(sentence.strip())
+# 去除(停用詞 + 單一字詞) + 分詞
+def seg_sentence(content):
+    sentence_seged = jieba.cut(content)
     stopwords = stopwordslist('HarryPotter\Lib_stopwordslist.txt')
     outstr = ''
     for word in sentence_seged:
         if word not in stopwords:
-            if word != '\t':
+            if word != '\t' and len(word)!=1 :
                 outstr += word
-                outstr += " "
+                outstr += "/"
     return outstr
 
-jieba.load_userdict("HarryPotter\Lib_HarryPotter_people.txt")
+# 生成取代同義詞的新文章
+def replaceSynonymWords(content):
+    # 1讀取同義詞表，並生成一個字典。combine_dict = {}
+    # synonymWords.txt是同義詞表，
+    # 每行是一系列同義詞，用空格分割
+    combine_dict = {}
+    for line in open("HarryPotter/Lib_HarryPotter_synonymous.txt", "r", encoding='utf-8'):
+        seperate_word = line.strip().split(" ")
+        num = len(seperate_word)
+        for i in range(1, num):
+            combine_dict[seperate_word[i]] = seperate_word[0]
+            # print(seperate_word)
+            # print(combine_dict)
 
-inputs = open('HarryPotter\HarryPotter.txt','r',encoding="UTF-8")
-outputs = open('HarryPotter\HarryPotter_no_stopwords.txt','w',encoding="UTF-8")
-for line in inputs:
-    line_seg = seg_sentence(line)
-    outputs.write(line_seg)
-outputs.close()
-inputs.close()
+    # 3將語句切分成單詞
+    seg_list = jieba.cut(content)
+    f = "/".join(seg_list).encode("utf-8")
+    f = f.decode("utf-8")
+    # print(f)
 
-with open('HarryPotter\HarryPotter_no_stopwords.txt','r',encoding='UTF-8') as fr:
+    # 4返回同義詞替換後的句子
+    final_sentence = ""
+    for word in f.split('/'):
+        if word in combine_dict:
+            word = combine_dict[word]
+            final_sentence += word
+        else:
+            final_sentence += word
+    return final_sentence
+
+# 讀取原文
+with open('HarryPotter/HarryPotter.txt','r',encoding='UTF-8') as fr:
     content = fr.read()
-    data = jieba.cut(fr.read())
-data = dict(Counter(data))
-for x, w in jieba.analyse.extract_tags(content,topK=20, withWeight=True):
-    print('%s %s' % (x, w))
 
-with open('HarryPotter\HarryPotter_wordcount.txt','w',encoding='UTF-8') as fw:
-    for k,v in data.items():
-        fw.write('%s,%d\n' % (k,v))
+# 生成新文章
+content_new = replaceSynonymWords(content)
+
+# 去除(停用詞 + 單一字詞) + 分詞
+words = seg_sentence(content_new)
+
+# # 生成分詞結果文檔
+# with open('HarryPotter/HarryPotter_clear.txt','w',encoding='UTF-8') as fw:
+#     fw.write(words)
+
+# # 獲取單個詞
+# for word in words.split('/'):
+#     print(word)
+
+
+
+
+
+
+
+
+
 
