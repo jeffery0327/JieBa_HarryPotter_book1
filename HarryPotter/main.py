@@ -4,7 +4,7 @@ import jieba.analyse
 import jieba.posseg
 from wordcloud import WordCloud
 import numpy as np
-from PIL import Image
+
 
 
 # 匯入字典
@@ -44,13 +44,13 @@ def replaceSynonymWords(content):
             # print(seperate_word)
             # print(combine_dict)
 
-    # 3將語句切分成單詞
+    # 3.將語句切分成單詞
     seg_list = jieba.cut(content)
     f = "/".join(seg_list).encode("utf-8")
     f = f.decode("utf-8")
     # print(f)
 
-    # 4返回同義詞替換後的句子
+    # 4.返回同義詞替換後的句子
     final_sentence = ""
     for word in f.split('/'):
         if word in combine_dict:
@@ -67,6 +67,9 @@ with open('HarryPotter/HarryPotter.txt','r',encoding='UTF-8') as fr:
 # 生成新文章
 content_new = replaceSynonymWords(content)
 
+
+
+#///////////////////////// 功能 /////////////////////////////
 # 去除(停用詞 + 單一字詞) + 分詞
 words = seg_sentence(content_new)
 
@@ -74,10 +77,10 @@ words = seg_sentence(content_new)
 
 # 文字雲圖片、字體
 # mask = np.array(Image.open('HarryPotter/picture/circle.png'))
-font = 'font.tff'
+font = 'cmss10.ttf'
 
 # 設定
-my_wordcloud = WordCloud(background_color='white',font_path=font).generate(words)
+my_wordcloud = WordCloud(font_path=font).generate(words)
 
 my_wordcloud.to_file('HarryPotter/picture/result.png')
 
