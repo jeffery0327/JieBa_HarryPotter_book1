@@ -77,7 +77,7 @@ words = seg_sentence(content_new)
 font = 'font.tff'
 
 # 設定
-my_wordcloud = WordCloud(background_color='white',font_path='font.tff').generate(words)
+my_wordcloud = WordCloud(background_color='white',font_path=font).generate(words)
 
 my_wordcloud.to_file('HarryPotter/picture/result.png')
 
